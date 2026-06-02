@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Records</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f5f5;
+}
+
+h1{
+text-align:center;
+background:#1e3a8a;
+color:white;
+padding:15px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+}
+
+img{
+width:70px;
+height:70px;
+border-radius:50%;
+object-fit:cover;
+}
+
+button{
+padding:8px 15px;
+margin:3px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.edit{
+background:#00bfff;
+color:white;
+}
+
+.delete{
+background:red;
+color:white;
+}
+
+.print{
+background:green;
+color:white;
+}
+
+.share{
+background:#25D366;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Student Records</h1>
+
+<button class="print" onclick="window.print()">
+Print Records
+</button>
+
+<table>
+
+<thead>
+<tr>
+<th>Photo</th>
+<th>Name</th>
+<th>Parentage</th>
+<th>Residence</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="tableData"></tbody>
+
+</table>
+
+<script>
+
+let students=JSON.parse(localStorage.getItem("students"))||[];
+
+function loadData(){
+
+let html="";
+
+students.forEach((s,index)=>{
+
+html+=`
+<tr>
+
+<td><img src="${s.photo}"></td>
+
+<td contenteditable="true"
+onblur="update(${index},'name',this.innerText)">
+${s.name}
+</td>
+
+<td contenteditable="true"
+onblur="update(${index},'parentage',this.innerText)">
+${s.parentage}
+</td>
+
+<td contenteditable="true"
+onblur="update(${index},'residence',this.innerText)">
+${s.residence}
+</td>
+
+<td contenteditable="true"
+onblur="update(${index},'email',this.innerText)">
+${s.email}
+</td>
+
+<td contenteditable="true"
+onblur="update(${index},'phone',this.innerText)">
+${s.phone}
+</td>
+
+<td>
+
+<button class="delete"
+onclick="deleteStudent(${index})">
+Delete
+</button>
+
+<a href="https://wa.me/?text=Student: ${s.name}">
+<button class="share">
+Share
+</button>
+</a>
+
+</td>
+
+</tr>
+`;
+});
+
+document.getElementById("tableData").innerHTML=html;
+}
+
+function deleteStudent(index){
+students.splice(index,1);
+localStorage.setItem("students",
+JSON.stringify(students));
+loadData();
+}
+
+function update(index,field,value){
+students[index][field]=value;
+localStorage.setItem("students",
+JSON.stringify(students));
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
